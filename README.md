@@ -17,9 +17,35 @@ LUDA: A Customized GPU Acceleration Scheme to Boost LSM Key-Value Store Compacti
 ### configuration
 
 - assume your `nvcc` path is `/usr/local/cuda/bin/nvcc`
+
 - assume the path of LUDA is `/home/abc/flying/LUDA`
   - modify the path to moderngpu head filens in `/home/abc/flying/LUDA/cuda/decode_kv.cu`
   - modify the path to a test directory `leveldb::DB::Open(options, "your_directory", &db);` in `/home/abc/flying/LUDA/db/paper_test.cc`, or compile will fail
+
+```
+|-- AUTHORS
+|-- build/
+|-- CMakeLists.txt
+|-- CONTRIBUTING.md
+|-- cuda/
+|   |-- cuda_common.h               # luda data structures
+|   |-- decode_kv.cu                # luda kernels
+|   |-- ...
+|-- db/
+|   |-- db_impl.cc                  # luda take over compaction
+|   |-- ...
+|-- doc/
+|-- helpers/
+|-- include/
+|-- issues/
+|-- LICENSE
+|-- NEWS
+|-- port/
+|-- README.md
+|-- table/
+|-- TODO
+|-- util/
+```
 
 
 ```
@@ -45,7 +71,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 
     - get the gencode of your GPU and the following at the end of `CXX_FLAGS = ...` :
 
-      `-std=c++11 -rdc=true -Xptxas -dlcm=ca -arch=sm_61`
+      `-std=c++11 -rdc=true -Xptxas -dlcm=ca --extended-lambda  -arch=sm_61 `
 
 
   - paper_test.dir/link.txt
@@ -72,6 +98,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make sure the above configurations a applied.
 
 ```
-cd `/home/abc/flying/LUDA/build`
+cd /home/abc/flying/LUDA/build
 cmake --build . --target clean && cmake --build . --target paper_test && cmake --build . --target db_bench
+cp ../build._static.sh && ./build_static.sh   # build libleveldb.a on demand
 ```
